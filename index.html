@@ -75,10 +75,15 @@
     background: var(--surface);
     border-bottom: 1px solid var(--border);
     display: flex;
-    padding: 0 48px;
-    gap: 0;
+    justify-content: center;
     overflow-x: auto;
     scrollbar-width: none;
+  }
+  .nav-inner {
+    display: flex;
+    padding: 0 48px;
+    max-width: 1200px;
+    width: 100%;
   }
   .nav::-webkit-scrollbar { display: none; }
   .nav-btn {
@@ -539,11 +544,13 @@
 </header>
 
 <nav class="nav">
-  <button class="nav-btn active" onclick="show('flow')">🔄 訂單流程</button>
-  <button class="nav-btn" onclick="show('policies')">📂 Policies 清單</button>
-  <button class="nav-btn" onclick="show('table')">📋 競品比較表</button>
-  <button class="nav-btn" onclick="show('obs')">💡 關鍵觀察</button>
-  <button class="nav-btn" onclick="show('score')">🎯 綜合評分</button>
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="show('flow')">🔄 訂單流程</button>
+    <button class="nav-btn" onclick="show('policies')">📂 Policies 清單</button>
+    <button class="nav-btn" onclick="show('table')">📋 競品比較表</button>
+    <button class="nav-btn" onclick="show('obs')">💡 關鍵觀察</button>
+    <button class="nav-btn" onclick="show('score')">🎯 綜合評分</button>
+  </div>
 </nav>
 
 <!-- ═══════════════════════════════════════════ -->
