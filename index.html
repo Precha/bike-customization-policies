@@ -900,6 +900,85 @@
 
   </div>
 
+  <!-- Payment tech difficulty analysis -->
+  <div class="journey" style="margin-top:20px">
+    <div class="journey-title">
+      <span class="zh-only">💳 Payment 技術難度分析</span>
+      <span class="en-only">💳 Payment Technical Complexity</span>
+    </div>
+    <div class="table-wrap">
+      <table class="diff-table">
+        <thead>
+          <tr>
+            <th class="row-label"><span class="zh-only">面向</span><span class="en-only">Dimension</span></th>
+            <th style="color:#1A5FA0"><span class="zh-only">流程 A（全程線上）</span><span class="en-only">Flow A (Fully Online)</span></th>
+            <th style="color:#2B6B4F"><span class="zh-only">流程 B（門市確認 + 線上付款）</span><span class="en-only">Flow B (In-store Confirm + Online Pay)</span></th>
+            <th style="color:#7A3020"><span class="zh-only">流程 C（門市當面付款）</span><span class="en-only">Flow C (In-store On-site Pay)</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label"><span class="zh-only">線上金流整合</span><span class="en-only">Online Payment Gateway</span></td>
+            <td class="cell-a"><span class="zh-only">必需（PSP 收款 + refund API）</span><span class="en-only">Required (PSP + refund API)</span></td>
+            <td class="cell-b"><span class="zh-only">必需（同流程 A）</span><span class="en-only">Required (same as Flow A)</span></td>
+            <td class="cell-c"><span class="zh-only">不需要</span><span class="en-only">Not required</span></td>
+          </tr>
+          <tr>
+            <td class="row-label"><span class="zh-only">訂單狀態機</span><span class="en-only">Order State Machine</span></td>
+            <td class="cell-a"><span class="zh-only">簡單：下單 → 付款 → 生產 → 完成</span><span class="en-only">Simple: Order → Pay → Produce → Done</span></td>
+            <td class="cell-b"><span class="zh-only">複雜：多「待門市確認」與「付款等待」兩個中間態</span><span class="en-only">Complex: adds "awaiting store confirmation" and "awaiting payment" intermediate states</span></td>
+            <td class="cell-c"><span class="zh-only">中等：下單 → 門市確認付款 → 通知生產</span><span class="en-only">Moderate: Order → Store confirms payment → Notify production</span></td>
+          </tr>
+          <tr>
+            <td class="row-label"><span class="zh-only">門市端工具</span><span class="en-only">Store-side Tooling</span></td>
+            <td class="cell-a"><span class="zh-only">不需要（被動取車通知即可）</span><span class="en-only">Not required (passive pickup notification only)</span></td>
+            <td class="cell-b"><span class="zh-only">需要：門市需主動在後台確認訂單，觸發消費者付款通知</span><span class="en-only">Required: store must actively confirm orders in a back-office tool to trigger consumer payment notification</span></td>
+            <td class="cell-c"><span class="zh-only">需要：門市確認收款後通知 Giant 開始生產</span><span class="en-only">Required: store must confirm payment receipt and notify Giant to start production</span></td>
+          </tr>
+          <tr>
+            <td class="row-label"><span class="zh-only">消費者通知</span><span class="en-only">Consumer Notifications</span></td>
+            <td class="cell-a"><span class="zh-only">簡單（付款確認 → 生產進度 → 取車通知）</span><span class="en-only">Simple (payment confirmed → production updates → pickup notice)</span></td>
+            <td class="cell-b"><span class="zh-only">複雜：需額外發「請前往門市確認」及「請返回網站付款」兩道通知</span><span class="en-only">Complex: two extra notifications — "visit store for confirmation" and "return to site to pay"</span></td>
+            <td class="cell-c"><span class="zh-only">中等：需發「請前往門市付款」通知</span><span class="en-only">Moderate: requires "visit store to pay" notification</span></td>
+          </tr>
+          <tr>
+            <td class="row-label"><span class="zh-only">退款技術路徑</span><span class="en-only">Refund Technical Path</span></td>
+            <td class="cell-a"><span class="zh-only">標準：退回原刷卡帳戶，PSP refund API</span><span class="en-only">Standard: return to original card via PSP refund API</span></td>
+            <td class="cell-b"><span class="zh-only">同流程 A（標準退款 API）</span><span class="en-only">Same as Flow A (standard refund API)</span></td>
+            <td class="cell-c"><span class="zh-only">無線上退款；需 Giant ↔ 門市帳款對帳機制</span><span class="en-only">No online refund; requires Giant ↔ store account reconciliation mechanism</span></td>
+          </tr>
+          <tr>
+            <td class="row-label"><span class="zh-only">付款 Link 管理</span><span class="en-only">Payment Link Management</span></td>
+            <td class="cell-a"><span class="zh-only">不需要</span><span class="en-only">Not required</span></td>
+            <td class="cell-b"><span class="zh-only">需要：確認後 link 有效期、逾期失效與重發邏輯</span><span class="en-only">Required: link expiry after confirmation, auto-invalidation, and re-send logic</span></td>
+            <td class="cell-c"><span class="zh-only">不需要</span><span class="en-only">Not required</span></td>
+          </tr>
+          <tr>
+            <td class="row-label"><span class="zh-only">整合難度</span><span class="en-only">Integration Difficulty</span></td>
+            <td class="cell-a">
+              <span style="color:#1A5FA0;font-weight:700;font-size:14px">★★★☆☆</span><br>
+              <span class="zh-only" style="color:var(--muted);font-size:11px">中等</span><span class="en-only" style="color:var(--muted);font-size:11px">Medium</span>
+            </td>
+            <td class="cell-b">
+              <span style="color:#2B6B4F;font-weight:700;font-size:14px">★★★★☆</span><br>
+              <span class="zh-only" style="color:var(--muted);font-size:11px">中高</span><span class="en-only" style="color:var(--muted);font-size:11px">Medium-High</span>
+            </td>
+            <td class="cell-c">
+              <span style="color:#7A3020;font-weight:700;font-size:14px">★★☆☆☆ / ★★★★☆</span><br>
+              <span class="zh-only" style="color:var(--muted);font-size:11px">技術低 / 運營高</span><span class="en-only" style="color:var(--muted);font-size:11px">Tech: Low / Ops: High</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="row-label"><span class="zh-only">關鍵開發風險</span><span class="en-only">Key Dev Risks</span></td>
+            <td class="cell-a"><span class="zh-only">改單後退款 + 重新下單的 UX 流程設計</span><span class="en-only">UX flow for post-modification refund + re-order</span></td>
+            <td class="cell-b"><span class="zh-only">三段流程放棄率高；付款 link 逾時與重發邏輯</span><span class="en-only">High dropout across 3-stage flow; payment link timeout and re-send logic</span></td>
+            <td class="cell-c"><span class="zh-only">無線上金流可追蹤；帳款對帳完全依賴門市配合</span><span class="en-only">No trackable online payment; account reconciliation fully dependent on store cooperation</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- Decision box -->
   <div class="decision-box">
     <div class="decision-header">📌 <span class="zh-only">今日待決議事項</span><span class="en-only">Today's Action Items</span></div>
@@ -1660,6 +1739,57 @@
     </div>
 
     <div class="obs-card">
+      <div class="obs-num">06</div>
+      <h3>
+        <span class="zh-only">Trek 的門市付款模式與 Giant 最接近</span>
+        <span class="en-only">Trek's In-Store Payment Model is Closest to Giant</span>
+      </h3>
+      <p>
+        <span class="zh-only">Trek Project One 不直接線上收款，需透過授權門市下單付款，與 Giant 規劃的流程 C 最類似。但 Trek 的缺點是門市各自訂立附加政策，消費者體驗不一致，也造成退換貨責任模糊。</span>
+        <span class="en-only">Trek Project One does not accept payment online; consumers must order and pay through an authorized store — most similar to Giant's planned Flow C. However, Trek's weakness is that individual stores set their own supplementary policies, resulting in inconsistent consumer experiences and unclear return/refund accountability.</span>
+      </p>
+      <div class="highlight">
+        <span class="zh-only">➜ Giant 建議（流程 C）：若採門市付款，需在 Dealer Agreement 中明確規範退款 SOP 與消費者糾紛責任歸屬，避免重蹈 Trek 門市政策不一致的問題。</span>
+        <span class="en-only">➜ Giant recommendation (Flow C): if in-store payment is adopted, the Dealer Agreement must clearly define the refund SOP and consumer dispute accountability, to avoid repeating Trek's problem of inconsistent store-level policies.</span>
+      </div>
+      <div class="sources" style="margin-top:12px">
+        <div class="sources-label"><span class="zh-only">參考來源</span><span class="en-only">Sources</span></div>
+        <a class="src-link" href="https://www.trekbikes.com/us/en_US/project-one-custom-bikes-explained/" target="_blank">trekbikes.com — Project One<span class="zh-only">說明（門市流程）</span><span class="en-only"> (store process)</span></a>
+        <a class="src-link" href="https://www.trekbikesofmountpleasant.com/about/shipping-return-policies-pg54.htm" target="_blank">Trek <span class="zh-only">授權門市 — 客製品退貨說明（各門市有差異）</span><span class="en-only">authorized dealer — custom bike return policy (varies by store)</span></a>
+      </div>
+    </div>
+
+    <div class="obs-card c-multi">
+      <div class="obs-num">07</div>
+      <h3>
+        <span class="zh-only">個人簽名選項帶來的四個 Policy 新要點</span>
+        <span class="en-only">Four Policy Implications of the Personal Signature Option</span>
+      </h3>
+      <p>
+        <span class="zh-only">Trek、Canyon、Orbea 三品牌均無上管個人簽名功能，Giant 為業界首創，需自行建立政策語境。簽名規格：正體字 / 斜體字二選一，限 15 個文數字。</span>
+        <span class="en-only">None of the three brands — Trek, Canyon, or Orbea — offer a top-tube personal signature feature. Giant is pioneering this in the industry and must build its own policy framework. Signature spec: regular or italic font, max 15 alphanumeric characters.</span>
+      </p>
+      <p style="margin-top:10px">
+        <span class="zh-only">
+          <strong>① IP 保護：</strong>消費者須保證簽名文字不侵犯第三方商標或著作權（仿 Canyon T&amp;C §14.3）<br>
+          <strong>② 取消節點提前：</strong>字體確認、簽名送出後即進入施作程序（不可逆），Cancellation Policy 需明定「簽名確認後不可取消或修改」<br>
+          <strong>③ 個資處理：</strong>簽名含個人姓名等識別資訊，Privacy Policy 須說明此欄位的收集目的與保存方式<br>
+          <strong>④ Disclaimer 具體化：</strong>正體 / 斜體預覽字形與刻印 / 塗裝實際效果可能有差異（筆劃粗細、間距），需在 Configurator Disclaimer 明示
+        </span>
+        <span class="en-only">
+          <strong>① IP Protection:</strong> Consumer must warrant that signature text does not infringe any third-party trademark or copyright (modeled on Canyon T&amp;C §14.3)<br>
+          <strong>② Earlier Cancellation Lock:</strong> Once font is confirmed and signature submitted, production is irreversible; Cancellation Policy must state "no cancellation or modification after signature confirmation"<br>
+          <strong>③ Personal Data Handling:</strong> Signature text (including personal name) is personal data; Privacy Policy must explain the collection purpose and retention method for this field<br>
+          <strong>④ Concrete Disclaimer:</strong> Regular/italic font preview may differ from actual engraving/paint result (stroke weight, spacing); this must be explicitly stated in the Configurator Disclaimer
+        </span>
+      </p>
+      <div class="highlight" style="border-left-color:#888">
+        <span class="zh-only">➜ 建議在配置器簽名輸入欄位旁加 inline checkbox，讓消費者確認「簽名內容不侵犯任何第三方權利」；並將字體選擇與簽名文字列入 Order Confirmation 確認單，作為施作依據與日後爭議憑證。</span>
+        <span class="en-only">➜ Recommended: add an inline checkbox beside the signature input field in the configurator, requiring consumers to confirm "signature content does not infringe any third-party rights." Also include font choice and signature text in the Order Confirmation document as the production reference and dispute record.</span>
+      </div>
+    </div>
+
+    <div class="obs-card">
       <div class="obs-num">08</div>
       <h3>
         <span class="zh-only">流程 A 付款後的負向流程：三種補強方案</span>
@@ -1742,57 +1872,6 @@
       <div class="highlight" style="margin-top:14px">
         <span class="zh-only">➜ Giant 建議採用方案 ② ＋ ③ 組合：下單付 30% 訂金，48 小時內可免費改單，M1–M4 里程碑後依序鎖定；尾款於 Giant 出貨至門市前收取。生產前取消退全款，生產開始後取消沒收訂金。Cancellation Policy 須明定各階段規則。</span>
         <span class="en-only">➜ Giant recommendation: combine options ② + ③ — 30% deposit at order, free modifications within 48 hours, progressive M1–M4 milestone locks; balance collected before Giant ships to store. Cancellation before production = full refund; cancellation after production begins = deposit forfeited. Cancellation Policy must explicitly define rules for each stage.</span>
-      </div>
-    </div>
-
-    <div class="obs-card c-multi">
-      <div class="obs-num">07</div>
-      <h3>
-        <span class="zh-only">個人簽名選項帶來的四個 Policy 新要點</span>
-        <span class="en-only">Four Policy Implications of the Personal Signature Option</span>
-      </h3>
-      <p>
-        <span class="zh-only">Trek、Canyon、Orbea 三品牌均無上管個人簽名功能，Giant 為業界首創，需自行建立政策語境。簽名規格：正體字 / 斜體字二選一，限 15 個文數字。</span>
-        <span class="en-only">None of the three brands — Trek, Canyon, or Orbea — offer a top-tube personal signature feature. Giant is pioneering this in the industry and must build its own policy framework. Signature spec: regular or italic font, max 15 alphanumeric characters.</span>
-      </p>
-      <p style="margin-top:10px">
-        <span class="zh-only">
-          <strong>① IP 保護：</strong>消費者須保證簽名文字不侵犯第三方商標或著作權（仿 Canyon T&amp;C §14.3）<br>
-          <strong>② 取消節點提前：</strong>字體確認、簽名送出後即進入施作程序（不可逆），Cancellation Policy 需明定「簽名確認後不可取消或修改」<br>
-          <strong>③ 個資處理：</strong>簽名含個人姓名等識別資訊，Privacy Policy 須說明此欄位的收集目的與保存方式<br>
-          <strong>④ Disclaimer 具體化：</strong>正體 / 斜體預覽字形與刻印 / 塗裝實際效果可能有差異（筆劃粗細、間距），需在 Configurator Disclaimer 明示
-        </span>
-        <span class="en-only">
-          <strong>① IP Protection:</strong> Consumer must warrant that signature text does not infringe any third-party trademark or copyright (modeled on Canyon T&amp;C §14.3)<br>
-          <strong>② Earlier Cancellation Lock:</strong> Once font is confirmed and signature submitted, production is irreversible; Cancellation Policy must state "no cancellation or modification after signature confirmation"<br>
-          <strong>③ Personal Data Handling:</strong> Signature text (including personal name) is personal data; Privacy Policy must explain the collection purpose and retention method for this field<br>
-          <strong>④ Concrete Disclaimer:</strong> Regular/italic font preview may differ from actual engraving/paint result (stroke weight, spacing); this must be explicitly stated in the Configurator Disclaimer
-        </span>
-      </p>
-      <div class="highlight" style="border-left-color:#888">
-        <span class="zh-only">➜ 建議在配置器簽名輸入欄位旁加 inline checkbox，讓消費者確認「簽名內容不侵犯任何第三方權利」；並將字體選擇與簽名文字列入 Order Confirmation 確認單，作為施作依據與日後爭議憑證。</span>
-        <span class="en-only">➜ Recommended: add an inline checkbox beside the signature input field in the configurator, requiring consumers to confirm "signature content does not infringe any third-party rights." Also include font choice and signature text in the Order Confirmation document as the production reference and dispute record.</span>
-      </div>
-    </div>
-
-    <div class="obs-card">
-      <div class="obs-num">06</div>
-      <h3>
-        <span class="zh-only">Trek 的門市付款模式與 Giant 最接近</span>
-        <span class="en-only">Trek's In-Store Payment Model is Closest to Giant</span>
-      </h3>
-      <p>
-        <span class="zh-only">Trek Project One 不直接線上收款，需透過授權門市下單付款，與 Giant 規劃的流程 C 最類似。但 Trek 的缺點是門市各自訂立附加政策，消費者體驗不一致，也造成退換貨責任模糊。</span>
-        <span class="en-only">Trek Project One does not accept payment online; consumers must order and pay through an authorized store — most similar to Giant's planned Flow C. However, Trek's weakness is that individual stores set their own supplementary policies, resulting in inconsistent consumer experiences and unclear return/refund accountability.</span>
-      </p>
-      <div class="highlight">
-        <span class="zh-only">➜ Giant 建議（流程 C）：若採門市付款，需在 Dealer Agreement 中明確規範退款 SOP 與消費者糾紛責任歸屬，避免重蹈 Trek 門市政策不一致的問題。</span>
-        <span class="en-only">➜ Giant recommendation (Flow C): if in-store payment is adopted, the Dealer Agreement must clearly define the refund SOP and consumer dispute accountability, to avoid repeating Trek's problem of inconsistent store-level policies.</span>
-      </div>
-      <div class="sources" style="margin-top:12px">
-        <div class="sources-label"><span class="zh-only">參考來源</span><span class="en-only">Sources</span></div>
-        <a class="src-link" href="https://www.trekbikes.com/us/en_US/project-one-custom-bikes-explained/" target="_blank">trekbikes.com — Project One<span class="zh-only">說明（門市流程）</span><span class="en-only"> (store process)</span></a>
-        <a class="src-link" href="https://www.trekbikesofmountpleasant.com/about/shipping-return-policies-pg54.htm" target="_blank">Trek <span class="zh-only">授權門市 — 客製品退貨說明（各門市有差異）</span><span class="en-only">authorized dealer — custom bike return policy (varies by store)</span></a>
       </div>
     </div>
 
