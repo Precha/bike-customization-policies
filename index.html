@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Giant 客製車網站 — 訂單流程 & Policy 討論報告</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --trek:   #005EB8;
+    --canyon: #1D1D1B;
+    --orbea:  #C8102E;
+    --bg:     #F7F7F5;
+    --surface:#FFFFFF;
+    --border: #E2E0DA;
+    --text:   #1A1A18;
+    --muted:  #6B6B68;
+    --green:  #1A7F4B;
+    --green-bg: #EBF7F2;
+    --amber:  #92600A;
+    --amber-bg: #FFF4E0;
+    --red:    #C01515;
+    --red-bg: #FDEAEA;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--text);
+    color: #fff;
+    padding: 40px 48px 36px;
+    border-bottom: 3px solid var(--trek);
+  }
+  header .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 10px;
+  }
+  header h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    line-height: 1.3;
+    margin-bottom: 14px;
+  }
+  header .meta {
+    font-size: 12px;
+    color: #999;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  header .meta span::before { content: '▸ '; color: #555; }
+
+  /* ── Nav tabs ── */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    padding: 0 48px;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active { color: var(--text); border-bottom-color: var(--trek); }
+
+  /* ── Sections ── */
+  .section { display: none; padding: 36px 48px 60px; max-width: 1200px; }
+  .section.active { display: block; }
+
+  /* ── Table ── */
+  .table-wrap { overflow-x: auto; border-radius: 10px; box-shadow: var(--shadow); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    min-width: 700px;
+  }
+  thead th {
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+  }
+  thead th:first-child { width: 13%; background: #F0EEE8; }
+  th.col-trek  { border-top: 3px solid var(--trek); }
+  th.col-canyon{ border-top: 3px solid var(--canyon); }
+  th.col-orbea { border-top: 3px solid var(--orbea); }
+
+  .prog { font-size: 11px; font-weight: 400; color: var(--muted); margin-top: 2px; }
+
+  tbody tr:nth-child(even) td { background: #FAFAF8; }
+  tbody tr:hover td { background: #F2F0EA; }
+  tbody td {
+    padding: 14px 16px;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  tbody td:first-child {
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--muted);
+    background: #F5F3ED;
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-top: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .tag-green  { background: var(--green-bg);  color: var(--green); }
+  .tag-amber  { background: var(--amber-bg);  color: var(--amber); }
+  .tag-red    { background: var(--red-bg);    color: var(--red); }
+
+  /* Source links */
+  .sources {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+  }
+  .sources-label {
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .src-link {
+    display: block;
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--trek);
+    text-decoration: none;
+    word-break: break-all;
+    margin-bottom: 2px;
+    opacity: 0.85;
+  }
+  .src-link:hover { opacity: 1; text-decoration: underline; }
+
+  /* ── Observation section ── */
+  .obs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    margin-top: 8px;
+  }
+  .obs-card {
+    background: var(--surface);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 24px;
+    border-top: 3px solid var(--trek);
+    position: relative;
+  }
+  .obs-card.c-canyon { border-top-color: var(--canyon); }
+  .obs-card.c-orbea  { border-top-color: var(--orbea); }
+  .obs-card.c-multi  { border-top-color: #888; }
+  .obs-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--border);
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    line-height: 1;
+  }
+  .obs-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    padding-right: 40px;
+  }
+  .obs-card p { font-size: 13px; color: var(--muted); line-height: 1.75; }
+  .obs-card .highlight {
+    background: #F0EEE8;
+    border-left: 3px solid var(--trek);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .obs-card.c-canyon .highlight { border-left-color: var(--canyon); }
+  .obs-card.c-orbea  .highlight { border-left-color: var(--orbea); }
+
+  /* ── Summary scorecard ── */
+  .scorecard {
+    background: var(--surface);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .score-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+  .score-row:last-child { border-bottom: none; }
+  .score-row:first-child { background: #F5F3ED; font-weight: 600; font-size: 12px; }
+  .score-cell {
+    padding: 13px 16px;
+    font-size: 13px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .score-cell:last-child { border-right: none; }
+  .score-cell:first-child { font-size: 12px; font-weight: 500; color: var(--muted); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-green { background: var(--green); }
+  .dot-amber { background: #E8A020; }
+  .dot-red   { background: var(--red); }
+
+  /* Section heading */
+  .section-header {
+    margin-bottom: 24px;
+  }
+  .section-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .section-header p {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  strong { font-weight: 600; color: var(--text); }
+  em { color: var(--muted); font-style: normal; }
+
+  /* ── Flow section ── */
+  .flow-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 8px;
+  }
+  @media(max-width: 800px) { .flow-grid { grid-template-columns: 1fr; } }
+  .flow-card {
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .flow-header {
+    padding: 18px 20px 14px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .flow-header .flow-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.75;
+    margin-bottom: 4px;
+  }
+  .flow-a .flow-header { background: #1A5FA0; }
+  .flow-b .flow-header { background: #2B6B4F; }
+  .flow-c .flow-header { background: #7A3020; }
+  .flow-body { padding: 18px 20px; }
+  .flow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .flow-step:last-child { margin-bottom: 0; }
+  .step-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .flow-a .step-num { background: #E6F0FB; color: #1A5FA0; }
+  .flow-b .step-num { background: #E4F2EB; color: #2B6B4F; }
+  .flow-c .step-num { background: #F5EAE7; color: #7A3020; }
+  .step-text { font-size: 13px; line-height: 1.6; }
+  .step-text strong { display: block; font-weight: 600; color: var(--text); }
+  .step-text span { color: var(--muted); font-size: 12px; }
+  .flow-meta {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .flow-meta-item { font-size: 12px; }
+  .flow-meta-item .label { color: var(--muted); font-size: 11px; margin-bottom: 2px; }
+  .flow-meta-item .value { font-weight: 600; }
+  .flow-a .flow-meta-item .value { color: #1A5FA0; }
+  .flow-b .flow-meta-item .value { color: #2B6B4F; }
+  .flow-c .flow-meta-item .value { color: #7A3020; }
+  .flow-risk {
+    margin-top: 14px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .flow-a .flow-risk { background: #EBF3FC; color: #1A5FA0; }
+  .flow-b .flow-risk { background: #E8F4EE; color: #2B6B4F; }
+  .flow-c .flow-risk { background: #F7EDEA; color: #7A3020; }
+
+  /* Journey bar */
+  .journey {
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 24px;
+    margin-top: 20px;
+  }
+  .journey-title { font-size: 13px; font-weight: 600; margin-bottom: 16px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-family: 'IBM Plex Mono', monospace; font-size: 11px; }
+  .journey-steps {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .j-step {
+    flex: 1;
+    min-width: 110px;
+    text-align: center;
+    position: relative;
+  }
+  .j-step::after {
+    content: '→';
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--border);
+    z-index: 1;
+  }
+  .j-step:last-child::after { display: none; }
+  .j-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 8px;
+    margin: 0 12px 0 0;
+  }
+  .j-step:last-child .j-box { margin-right: 0; }
+  .j-num { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+  .j-label { font-size: 12px; font-weight: 600; }
+  .j-policy { font-size: 10px; color: var(--trek); margin-top: 4px; font-family: 'IBM Plex Mono', monospace; }
+
+  /* ── Policy list section ── */
+  .policy-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 8px;
+  }
+  @media(max-width: 700px) { .policy-split { grid-template-columns: 1fr; } }
+  .policy-block {
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .policy-block-header {
+    padding: 16px 20px;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pb-common .policy-block-header { background: #EBF3FC; color: #1A5FA0; }
+  .pb-diff   .policy-block-header { background: #FFF4E0; color: #92600A; }
+  .policy-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .policy-item:last-child { border-bottom: none; }
+  .policy-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    width: 22px;
+    flex-shrink: 0;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .policy-content { flex: 1; }
+  .policy-name { font-weight: 600; font-size: 13px; margin-bottom: 3px; }
+  .policy-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .policy-flows {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+  .pill {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .pill-a { background: #E6F0FB; color: #1A5FA0; }
+  .pill-b { background: #E4F2EB; color: #2B6B4F; }
+  .pill-c { background: #F5EAE7; color: #7A3020; }
+  .pill-all { background: #F0EEE8; color: #555; }
+
+  /* diff table inside policy section */
+  .diff-table { width: 100%; border-collapse: collapse; }
+  .diff-table th { background: #FAFAF8; font-size: 12px; font-weight: 600; padding: 10px 14px; border-bottom: 2px solid var(--border); text-align: left; }
+  .diff-table td { padding: 12px 14px; font-size: 12px; vertical-align: top; border-bottom: 1px solid var(--border); line-height: 1.6; }
+  .diff-table tr:last-child td { border-bottom: none; }
+  .diff-table .row-label { font-weight: 600; color: var(--muted); background: #F5F3ED; width: 22%; }
+  .diff-table .cell-a { border-left: 3px solid #1A5FA0; }
+  .diff-table .cell-b { border-left: 3px solid #2B6B4F; }
+  .diff-table .cell-c { border-left: 3px solid #7A3020; }
+  .diff-note {
+    margin-top: 16px;
+    background: #FFF4E0;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 12px;
+    line-height: 1.75;
+    color: #6B4400;
+  }
+  .diff-note strong { color: #92600A; }
+
+  /* Decision box */
+  .decision-box {
+    margin-top: 24px;
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .decision-header {
+    background: var(--text);
+    color: #fff;
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .decision-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  @media(max-width: 700px) { .decision-grid { grid-template-columns: 1fr 1fr; } }
+  .decision-item {
+    padding: 16px 18px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .decision-item:nth-child(4n) { border-right: none; }
+  .decision-item .di-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; font-family: 'IBM Plex Mono', monospace; }
+  .decision-item .di-text { font-size: 13px; font-weight: 500; }
+
+  scrollbar-width: none;
+
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #CCC; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Giant Group 內部討論文件 · 客製車網站專案</div>
+  <h1>訂單流程設計 × Policy 架構<br>競品分析討論報告</h1>
+  <div class="meta">
+    <span>三種訂單流程比較（A / B / C）</span>
+    <span>共通 & 差異 Policies 清單</span>
+    <span>Trek / Canyon / Orbea 競品條文</span>
+    <span>資料擷取日期：2025</span>
+  </div>
+</header>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="show('flow')">🔄 訂單流程</button>
+  <button class="nav-btn" onclick="show('policies')">📂 Policies 清單</button>
+  <button class="nav-btn" onclick="show('table')">📋 競品比較表</button>
+  <button class="nav-btn" onclick="show('obs')">💡 關鍵觀察</button>
+  <button class="nav-btn" onclick="show('score')">🎯 綜合評分</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 0: FLOW                            -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section active" id="sec-flow">
+  <div class="section-header">
+    <h2>三種訂單流程</h2>
+    <p>Giant 客製車網站的核心決策：選擇哪種訂單流程，直接決定金流歸屬、合約主體與所有 Policy 的寫法。</p>
+  </div>
+
+  <!-- Journey bar -->
+  <div class="journey">
+    <div class="journey-title">消費者旅程 — 六個關鍵觸點，每個都需要 Policy 覆蓋</div>
+    <div class="journey-steps">
+      <div class="j-step">
+        <div class="j-box">
+          <div class="j-num">01</div>
+          <div class="j-label">線上配置</div>
+          <div class="j-policy">Configurator Disclaimer</div>
+        </div>
+      </div>
+      <div class="j-step">
+        <div class="j-box">
+          <div class="j-num">02</div>
+          <div class="j-label">下單提交</div>
+          <div class="j-policy">T&amp;C · Pre-order Agreement</div>
+        </div>
+      </div>
+      <div class="j-step">
+        <div class="j-box">
+          <div class="j-num">03</div>
+          <div class="j-label">付款</div>
+          <div class="j-policy">Payment Terms ← 差異最大</div>
+        </div>
+      </div>
+      <div class="j-step">
+        <div class="j-box">
+          <div class="j-num">04</div>
+          <div class="j-label">製作追蹤</div>
+          <div class="j-policy">Order Confirmation</div>
+        </div>
+      </div>
+      <div class="j-step">
+        <div class="j-box">
+          <div class="j-num">05</div>
+          <div class="j-label">到店取車</div>
+          <div class="j-policy">Pickup Policy</div>
+        </div>
+      </div>
+      <div class="j-step">
+        <div class="j-box">
+          <div class="j-num">06</div>
+          <div class="j-label">售後</div>
+          <div class="j-policy">Return · Warranty</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Three flow cards -->
+  <div class="flow-grid" style="margin-top:24px">
+
+    <div class="flow-card flow-a">
+      <div class="flow-header">
+        <div class="flow-label">流程 A — 推薦</div>
+        全程線上
+      </div>
+      <div class="flow-body">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>線上配置</strong><span>消費者自行在網站完成車款選擇</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>線上付款</strong><span>訂金或全額，直接透過網站刷卡</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>Giant 製作</strong><span>工廠開始生產，進度通知消費者</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">4</div>
+          <div class="step-text"><strong>門市取車</strong><span>抵達門市後通知消費者前來 fitting 取車</span></div>
+        </div>
+        <div class="flow-meta">
+          <div class="flow-meta-item">
+            <div class="label">金流方向</div>
+            <div class="value">消費者 → Giant</div>
+          </div>
+          <div class="flow-meta-item">
+            <div class="label">合約主體</div>
+            <div class="value">Giant</div>
+          </div>
+          <div class="flow-meta-item">
+            <div class="label">退款機制</div>
+            <div class="value">Giant 直接退</div>
+          </div>
+          <div class="flow-meta-item">
+            <div class="label">糾紛責任</div>
+            <div class="value">Giant（清晰）</div>
+          </div>
+        </div>
+        <div class="flow-risk">
+          ✓ 品牌控制力最強，責任最明確，退款最單純，符合台灣及歐盟法規要求，資料收集完整可支援 CRM。<br>
+          <strong>推薦採用</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-card flow-b">
+      <div class="flow-header">
+        <div class="flow-label">流程 B — 次選</div>
+        門市確認 + 線上付款
+      </div>
+      <div class="flow-body">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>線上配置</strong><span>消費者自行在網站完成初步選擇</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>門市確認</strong><span>門市老闆與消費者確認訂單細節、尺寸</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>線上付款給 Giant</strong><span>確認後消費者返回網站刷卡，錢給 Giant</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">4</div>
+          <div class="step-text"><strong>Giant 製作 → 門市取車</strong><span>完成後送到門市，通知取車</span></div>
+        </div>
+        <div class="flow-meta">
+          <div class="flow-meta-item">
+            <div class="label">金流方向</div>
+            <div class="value">消費者 → Giant</div>
+          </div>
+          <div class="flow-meta-item">
+            <div class="label">合約主體</div>
+            <div class="value">Giant</div>
+          </div>
+          <div class="flow-meta-item">
+            <div class="label">退款機制</div>
+            <div class="value">Giant 直接退</div>
+          </div>
+          <div class="flow-meta-item">
+            <div class="label">糾紛責任</div>
+            <div class="value">Giant（清晰）</div>
+          </div>
+        </div>
+        <div class="flow-risk">
+          ✓ 金流仍走 Giant，責任清楚。適合需要門市協助確認尺寸的市場（如日本）。<br>
+          ⚠ 「門市確認後反悔」的時間窗口需在 Cancellation Policy 明確定義。
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-card flow-c">
+      <div class="flow-header">
+        <div class="flow-label">流程 C — 需釐清</div>
+        門市當面付款
+      </div>
+      <div class="flow-body">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>線上配置</strong><span>消費者自行在網站完成初步選擇</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>門市確認 + 當面付款</strong><span>門市與消費者確認後，消費者現場付款給門市</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>Giant 製作</strong><span>門市通知 Giant 開始生產</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">4</div>
+          <div class="step-text"><strong>門市取車</strong><span>完成後送到門市，通知消費者取車</span></div>
+        </div>
+        <div class="flow-meta">
+          <div class="flow-meta-item">
+            <div class="label">金流方向</div>
+            <div class="value">消費者 → 門市</div>
+          </div>
+          <div class="flow-meta-item">
+            <div class="label">合約主體</div>
+            <div class="value">待釐清</div>
+          </div>
+          <div class="flow-meta-item">
+            <div class="label">退款機制</div>
+            <div class="value">門市退款</div>
+          </div>
+          <div class="flow-meta-item">
+            <div class="label">糾紛責任</div>
+            <div class="value">Giant vs. 門市</div>
+          </div>
+        </div>
+        <div class="flow-risk">
+          ⚠ 退款走門市，需制定 Giant ↔ 門市退款 SOP。<br>
+          ⚠ 消費者主張台灣消保法 7 日鑑賞期時，向 Giant 還是門市申請？<br>
+          ⚠ 若門市為合約主體，需另簽 <strong>Dealer Agreement</strong> 明訂責任分工，否則法律曝險高。
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Decision box -->
+  <div class="decision-box">
+    <div class="decision-header">📌 今日待決議事項</div>
+    <div class="decision-grid">
+      <div class="decision-item">
+        <div class="di-label">議題 ①</div>
+        <div class="di-text">確認採用哪種訂單流程？或依市場別分開採用？</div>
+      </div>
+      <div class="decision-item">
+        <div class="di-label">議題 ②</div>
+        <div class="di-text">若採流程 C，是否需要制定 Dealer Agreement 框架？</div>
+      </div>
+      <div class="decision-item">
+        <div class="di-label">議題 ③</div>
+        <div class="di-text">法律顧問何時介入審閱 Return Policy 與 T&amp;C？</div>
+      </div>
+      <div class="decision-item">
+        <div class="di-label">議題 ④</div>
+        <div class="di-text">日本市場：特商法揭露義務，需另行研究（與台灣 / 歐盟不同）。</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 1.5: POLICIES LIST                 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section" id="sec-policies">
+  <div class="section-header">
+    <h2>Policies 架構清單</h2>
+    <p>依三種流程分析，列出共通必備文件與各流程差異 Policies。</p>
+  </div>
+
+  <!-- Common policies -->
+  <div class="policy-split">
+    <div class="policy-block pb-common">
+      <div class="policy-block-header">
+        <span>🔵</span> 三種流程共通（8 + 1 份）
+      </div>
+      <div class="policy-item">
+        <div class="policy-num">①</div>
+        <div class="policy-content">
+          <div class="policy-name">Terms &amp; Conditions</div>
+          <div class="policy-desc">服務規則、製作週期、所有權移轉時間點、使用網站資格</div>
+          <div class="policy-flows"><span class="pill pill-all">A · B · C 均需</span></div>
+        </div>
+      </div>
+      <div class="policy-item">
+        <div class="policy-num">②</div>
+        <div class="policy-content">
+          <div class="policy-name">Privacy Policy</div>
+          <div class="policy-desc">個資收集與使用；台灣 PDPA、歐盟 GDPR 均適用</div>
+          <div class="policy-flows"><span class="pill pill-all">A · B · C 均需</span></div>
+        </div>
+      </div>
+      <div class="policy-item">
+        <div class="policy-num">③</div>
+        <div class="policy-content">
+          <div class="policy-name">Cookie Policy</div>
+          <div class="policy-desc">歐盟市場必須在進入網站時取得明確同意（ePrivacy Directive）</div>
+          <div class="policy-flows"><span class="pill pill-all">A · B · C 均需</span></div>
+        </div>
+      </div>
+      <div class="policy-item">
+        <div class="policy-num">④</div>
+        <div class="policy-content">
+          <div class="policy-name">Configurator Disclaimer</div>
+          <div class="policy-desc">螢幕顯色與實車色差；規格以最終確認單為準</div>
+          <div class="policy-flows"><span class="pill pill-all">A · B · C 均需</span></div>
+        </div>
+      </div>
+      <div class="policy-item">
+        <div class="policy-num">⑤</div>
+        <div class="policy-content">
+          <div class="policy-name">Order Confirmation document</div>
+          <div class="policy-desc">配置明細、價格（含稅）、製作週期、取車門市（每筆訂單產生）</div>
+          <div class="policy-flows"><span class="pill pill-all">A · B · C 均需</span></div>
+        </div>
+      </div>
+      <div class="policy-item">
+        <div class="policy-num">⑥</div>
+        <div class="policy-content">
+          <div class="policy-name">Cancellation Policy</div>
+          <div class="policy-desc">製作前 / 製作中 / 完成後各階段取消條件與退費規則</div>
+          <div class="policy-flows"><span class="pill pill-all">A · B · C 均需</span></div>
+        </div>
+      </div>
+      <div class="policy-item">
+        <div class="policy-num">⑦</div>
+        <div class="policy-content">
+          <div class="policy-name">Return &amp; Refund Policy</div>
+          <div class="policy-desc">台灣 7 日 / 歐盟 14 日；客製品退貨限制說明（需法律顧問審閱）</div>
+          <div class="policy-flows"><span class="pill pill-all">A · B · C 均需</span></div>
+        </div>
+      </div>
+      <div class="policy-item">
+        <div class="policy-num">⑧</div>
+        <div class="policy-content">
+          <div class="policy-name">Warranty Policy</div>
+          <div class="policy-desc">車架、零件、塗裝各別保固期；不在保固範圍的情況；客製色無法復原處理方式</div>
+          <div class="policy-flows"><span class="pill pill-all">A · B · C 均需</span></div>
+        </div>
+      </div>
+      <div class="policy-item">
+        <div class="policy-num">+</div>
+        <div class="policy-content">
+          <div class="policy-name">Pickup Policy（取車政策）</div>
+          <div class="policy-desc">指定門市取車、尺寸 fitting 確認流程、逾期未取車處理</div>
+          <div class="policy-flows"><span class="pill pill-all">A · B · C 均需</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diff policies -->
+    <div class="policy-block pb-diff">
+      <div class="policy-block-header">
+        <span>🟡</span> 三種流程差異 Policies
+      </div>
+
+      <div style="overflow-x:auto">
+      <table class="diff-table">
+        <thead>
+          <tr>
+            <th class="row-label">Policy</th>
+            <th style="color:#1A5FA0">流程 A</th>
+            <th style="color:#2B6B4F">流程 B</th>
+            <th style="color:#7A3020">流程 C</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">付款條款<br>Payment Terms</td>
+            <td class="cell-a">全額線上付款，訂金 + 尾款均透過網站收取，Giant 為收款方</td>
+            <td class="cell-b">門市確認後，消費者上網刷卡；Giant 仍為收款方</td>
+            <td class="cell-c">當面付款給門市；網站無線上收款需求，門市為收款方</td>
+          </tr>
+          <tr>
+            <td class="row-label">預購協議<br>Pre-order Agreement</td>
+            <td class="cell-a">下單時線上勾選同意，合約即成立，Giant 為主體</td>
+            <td class="cell-b">門市確認後再線上簽署；Giant 仍為主體</td>
+            <td class="cell-c">當面簽署（紙本或電子）；合約主體需明確界定（Giant 或門市）</td>
+          </tr>
+          <tr>
+            <td class="row-label">退款機制<br>Refund Mechanism</td>
+            <td class="cell-a">Giant 直接退款至原刷卡帳戶，流程單純</td>
+            <td class="cell-b">Giant 直接退款至原刷卡帳戶，流程單純</td>
+            <td class="cell-c">門市退款；需制定 Giant ↔ 門市退款 SOP，增加複雜度</td>
+          </tr>
+          <tr>
+            <td class="row-label">消費糾紛責任<br>Dispute Liability</td>
+            <td class="cell-a">Giant 為唯一責任主體，消費者只需聯絡 Giant</td>
+            <td class="cell-b">Giant 為唯一責任主體，消費者只需聯絡 Giant</td>
+            <td class="cell-c">Giant vs. 門市責任界定不清，消費者可能兩頭跑；需 Dealer Agreement 事先明訂</td>
+          </tr>
+          <tr>
+            <td class="row-label">Dealer Agreement<br>（非消費者文件）</td>
+            <td class="cell-a">不需要（門市僅為取車點）</td>
+            <td class="cell-b">建議訂立，規範確認流程與門市角色</td>
+            <td class="cell-c">必須訂立，規範收款、退款、糾紛責任分工</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="diff-note">
+        <strong>⚠ 流程 C 特別注意：</strong>消費者主張台灣消保法 7 日鑑賞期時，應向 Giant 還是門市申請退款？此問題必須在 Dealer Agreement 中事先明確規範，否則上線後發生退款糾紛時雙方均無依據。
+      </div>
+    </div>
+  </div>
+
+  <!-- Law section -->
+  <div style="margin-top:24px;background:var(--surface);border-radius:12px;box-shadow:var(--shadow);overflow:hidden">
+    <div style="background:#1A1A18;color:#fff;padding:14px 20px;font-weight:600;font-size:13px">⚖ 法規風險提示</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+      <div style="padding:20px;border-right:1px solid var(--border)">
+        <div style="font-weight:600;font-size:13px;margin-bottom:10px;color:#1A5FA0">台灣 — 消費者保護法</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.9">
+          <strong style="color:var(--text)">7 日鑑賞期：</strong>收到商品後 7 日內可無條件退貨<br>
+          <strong style="color:var(--text)">客製品豁免（§19-1）：</strong>需「真正客製」；從選項清單配置不構成豁免<br>
+          <strong style="color:var(--red)">建議：</strong>政策措辭謹慎，事先諮詢法律顧問
+        </div>
+      </div>
+      <div style="padding:20px">
+        <div style="font-weight:600;font-size:13px;margin-bottom:10px;color:#7A3020">歐盟 — 消費者權利指令（CRD）</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.9">
+          <strong style="color:var(--text)">14 日 cooling-off：</strong>消費者有 14 日無條件取消權<br>
+          <strong style="color:var(--text)">客製品豁免同樣有限：</strong>預設選項清單配置不在豁免範圍<br>
+          <strong style="color:var(--text)">VAT：</strong>B2C 售價須含稅標示（Price Indication Directive 98/6/EC）<br>
+          <strong style="color:var(--red)">建議：</strong>「客製品不適用退換」措辭需法律顧問審閱後才能使用
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 2: TABLE (existing)                -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section" id="sec-table">
+  <div class="section-header">
+    <h2>競品 Policy 條文比較表</h2>
+    <p>Trek / Canyon / Orbea 三品牌客製化車款專屬政策條文，含原始資料來源連結。點擊連結可核實原文。</p>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th class="col-trek" style="color:var(--trek)">Trek — Project One
+          <div class="prog">美國威斯康辛州手工製造</div>
+        </th>
+        <th class="col-canyon" style="color:var(--canyon)">Canyon — MYCANYON
+          <div class="prog">德國科布倫茨直銷</div>
+        </th>
+        <th class="col-orbea" style="color:var(--orbea)">Orbea — MyO
+          <div class="prog">西班牙 Mallabia 工廠</div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- ① T&C -->
+      <tr>
+        <td>① T&amp;C<br>服務條款</td>
+        <td>
+          下單即視為合約要約；Trek 發出確認 email 後合約成立。<strong>訂單一旦提交「即開始處理，不得更改或取消」</strong>（GB &amp; US 均如此）。門市各自訂有附加條款，消費者需向原購買門市查詢。
+          <br><span class="tag tag-amber">線下門市仍適用個別店規</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.trekbikes.com/gb/en_GB/company/legal_policies/terms_and_conditions/" target="_blank">trekbikes.com/gb — General T&amp;C（英國版，完整條文）</a>
+            <a class="src-link" href="https://www.trekbikes.com/us/en_US/customer_service/" target="_blank">trekbikes.com/us — Customer Service（「不得取消」說明）</a>
+          </div>
+        </td>
+        <td>
+          下單後 5 個工作天內 Canyon 可接受要約；<strong>自動確認信不等於合約成立</strong>。合約適用德國法律，消費者享受其居住國強制保護法。EU Data Act §17 另設資料收集專章。
+          <br><span class="tag tag-green">條款全文公開清晰</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.canyon.com/en-fr/about-content/terms-conditions.html" target="_blank">canyon.com — General Terms &amp; Conditions（完整條文，§2 合約成立）</a>
+          </div>
+        </td>
+        <td>
+          訂單確認 email 送出後合約成立。系統顯示「CONFIRMED」時，可在 My Account 取消訂單；<strong>一旦出貨後不可取消</strong>。稅金依送達地（門市取車則依門市地址）計算。
+          <br><span class="tag tag-green">線上訂單狀態即時可查</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.orbea.com/us-en/general-shopping-terms/" target="_blank">orbea.com — General Shopping Terms（訂單狀態說明）</a>
+            <a class="src-link" href="https://www.orbea.com/gb-en/shopping-guide/" target="_blank">orbea.com/gb — Shopping Guide（取消流程）</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- ② Privacy -->
+      <tr>
+        <td>② Privacy Policy<br>個資政策</td>
+        <td>
+          英國版 T&amp;C §11 引用獨立 Privacy Policy，適用英國法律。美國版受 CCPA 規範。未在 T&amp;C 中詳述跨境傳輸細節。
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.trekbikes.com/gb/en_GB/company/legal_policies/terms_and_conditions/" target="_blank">trekbikes.com/gb — T&amp;C §11 Data Protection</a>
+          </div>
+        </td>
+        <td>
+          T&amp;C §17 另設「資料存取與使用」（EU Data Act）專章，規範感測器資料收集、使用、轉移，與 GDPR 分開處理。<strong>符合 EU Data Act 2023</strong>。
+          <br><span class="tag tag-green">最明確，EU Data Act 完整覆蓋</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.canyon.com/en-fr/about-content/terms-conditions.html" target="_blank">canyon.com — T&amp;C §17 Data Access and Use</a>
+          </div>
+        </td>
+        <td>
+          有獨立 Privacy Policy 頁面，符合 EU GDPR。網站使用 Cookie Banner，進站需同意。
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.orbea.com/us-en/general-shopping-terms/" target="_blank">orbea.com — General Shopping Terms（資料保護說明）</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- ③ Cookie -->
+      <tr>
+        <td>③ Cookie Policy</td>
+        <td>
+          有 Cookie Banner，歐盟市場版本（GB）進站時顯示同意視窗。美國版相對寬鬆。
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.trekbikes.com/gb/en_GB/" target="_blank">trekbikes.com/gb — 進入首頁可見 Cookie Banner</a>
+          </div>
+        </td>
+        <td>
+          有 Cookie 同意機制，需點擊聊天工具前同意 Cookie 政策。符合 ePrivacy Directive。
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.canyon.com/en-fr/about-content/terms-conditions.html" target="_blank">canyon.com — T&amp;C（Cookie 同意說明）</a>
+          </div>
+        </td>
+        <td>
+          有 Cookie 同意機制，含「必要 / 分析 / 行銷」分類。符合 ePrivacy Directive。
+          <br><span class="tag tag-green">分類最細緻</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.orbea.com/us-en/myo/ebikes" target="_blank">orbea.com/myo — 進入頁面可見分類 Cookie Banner</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- ④ Configurator Disclaimer -->
+      <tr>
+        <td>④ Configurator Disclaimer<br>配置器免責</td>
+        <td>
+          頁面說明「顏色、效果因螢幕設定而異」；ICON 系列強調「每台手工塗裝，外觀略有差異」。Paint FAQ 明確說明<strong>色差不構成保固事由</strong>。
+          <br><span class="tag tag-amber">色差說明分散在多個頁面</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.trekbikes.com/ca/en_CA/FAQ/project-one-paint/" target="_blank">trekbikes.com — Project One Paint FAQ（色差與保固說明）</a>
+            <a class="src-link" href="https://www.trekbikes.com/us/en_US/project-one-icon/" target="_blank">trekbikes.com — ICON 系列說明（手工差異）</a>
+          </div>
+        </td>
+        <td>
+          T&amp;C §14.1 定義 MYCANYON 為「依 Canyon 提供選項所確定裝備與設計之車款」。<br>§14.3 要求<strong>消費者保證名牌文字不違法</strong>，並對第三方索賠負責。
+          <br><span class="tag tag-green">合約定義最明確</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.canyon.com/en-fr/about-content/terms-conditions.html" target="_blank">canyon.com — T&amp;C §14 MYCANYON Special Regulations</a>
+          </div>
+        </td>
+        <td>
+          General Shopping Terms 指出所有網站內容（含 MyO 配置工具產生的車款設計）均屬 Orbea 智慧財產。<strong>未見專門的螢幕顯色色差聲明。</strong>
+          <br><span class="tag tag-amber">色差免責較弱</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.orbea.com/us-en/general-shopping-terms/" target="_blank">orbea.com — General Shopping Terms（IP 說明）</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- ⑤ Order Confirmation -->
+      <tr>
+        <td>⑤ Order Confirmation<br>訂單確認</td>
+        <td>
+          下單後發送確認 email；門市另發取車通知。在線訂單可在帳戶查看狀態。<strong>Project One 需透過門市下單</strong>，線上配置後交由門市送出訂單，非直接線上完成。
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.trekbikes.com/us/en_US/customer_service/" target="_blank">trekbikes.com — Customer Service（訂單追蹤說明）</a>
+            <a class="src-link" href="https://www.trekbikes.com/gb/en_GB/company/legal_policies/terms_and_conditions/" target="_blank">trekbikes.com/gb — T&amp;C §5 Pickup Deliveries</a>
+          </div>
+        </td>
+        <td>
+          <strong>自動確認信「不等於合約成立」</strong>（§2.2），需 Canyon 正式接受後合約才有效。Pre-order 在「生產確認後 14 天前」通知付款。付款後才正式成立合約。
+          <br><span class="tag tag-amber">確認機制分兩階段，消費者需留意</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.canyon.com/en-fr/about-content/terms-conditions.html" target="_blank">canyon.com — T&amp;C §2.2（合約成立）& §10 Pre-order</a>
+          </div>
+        </td>
+        <td>
+          下單後立即寄出確認 email，含完整訂單細節。出貨時另發追蹤通知。<strong>My Account/Orders 可即時查訂單狀態</strong>（Confirmed → In Production → Shipped → Delivered）。
+          <br><span class="tag tag-green">訂單狀態追蹤最完整</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.orbea.com/us-en/general-shopping-terms/" target="_blank">orbea.com — General Shopping Terms（訂單狀態說明）</a>
+            <a class="src-link" href="https://stories.orbea.com/en/orbea-dealers-bikes-home/" target="_blank">orbea.com/stories — 訂單流程說明（2020）</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- ⑥ Cancellation -->
+      <tr>
+        <td>⑥ Cancellation Policy<br>取消政策</td>
+        <td>
+          <strong>「一旦提交訂單即開始處理，不得更改或取消」</strong>（GB &amp; US 均如此）。退貨需依 30 日退貨流程辦理，無法直接取消。Project One 客製品不適用一般退貨。
+          <br><span class="tag tag-red">最嚴格，無取消窗口</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.trekbikes.com/gb/en_GB/customer_service/" target="_blank">trekbikes.com/gb — Customer Service（「cannot be changed or cancelled」）</a>
+            <a class="src-link" href="https://www.trekbikes.com/us/en_US/customer_service/" target="_blank">trekbikes.com/us — Customer Service（同上）</a>
+            <a class="src-link" href="https://www.trekbikesofmountpleasant.com/about/shipping-return-policies-pg54.htm" target="_blank">Trek 授權門市 — 客製品排除退貨說明（代表性案例）</a>
+          </div>
+        </td>
+        <td>
+          MYCANYON 客製訂單享有<strong>「下單後 24 小時取消權」</strong>（T&amp;C §14.2），需透過 Canyon MyAccount 辦理。標準 Pre-order 在付款前可隨時取消。付款後享有法定撤回權。
+          <br><span class="tag tag-green">24 小時取消窗口明確，業界最佳實務</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.canyon.com/en-fr/about-content/terms-conditions.html" target="_blank">canyon.com — T&amp;C §14.2（MYCANYON 24 小時取消權）& §10.2（Pre-order 取消）</a>
+          </div>
+        </td>
+        <td>
+          訂單在<strong>「CONFIRMED」狀態時可在 My Account 自助取消</strong>，退款 4–7 日退回原支付方式。一旦出貨後無法取消，轉為退貨程序。
+          <br><span class="tag tag-green">出貨前可自助取消，透明</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.orbea.com/en-gb/p/cancellations-returns" target="_blank">orbea.com — Cancellations &amp; Returns（取消條件）</a>
+            <a class="src-link" href="https://www.orbea.com/gb-en/shopping-guide/" target="_blank">orbea.com/gb — Shopping Guide（訂單狀態 &amp; 取消流程）</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- ⑦ Return & Refund -->
+      <tr>
+        <td>⑦ Return &amp; Refund<br>退換貨政策</td>
+        <td>
+          標準車款：30 日退貨，免費。<br>
+          <strong>Project One / 特殊訂單：明確排除在退貨政策外，不可退換。</strong><br>
+          英國版：30 日撤回權（符合 CRD），但客製品適用排除條款。退款處理最長 30 日。
+          <br><span class="tag tag-red">客製品完全不受理，無例外條款</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.trekbikes.com/us/en_US/trek-returns/" target="_blank">trekbikes.com/us — Return Policy（標準退貨說明）</a>
+            <a class="src-link" href="https://www.trekbikesofmountpleasant.com/about/shipping-return-policies-pg54.htm" target="_blank">Trek 授權門市 — Project One 排除退貨</a>
+            <a class="src-link" href="https://www.trekbikesofmountpleasant.com/about/frequently-asked-questions-pg344.htm" target="_blank">Trek 授權門市 FAQ — 客製品不可退換</a>
+            <a class="src-link" href="https://www.trekbikes.com/gb/en_GB/company/legal_policies/terms_and_conditions/" target="_blank">trekbikes.com/gb — T&amp;C §7（Right of Withdrawal，30 天）</a>
+          </div>
+        </td>
+        <td>
+          標準車款：30 日自願退貨（消費者自付運費）。<br>
+          <strong>MYCANYON 客製品：不適用 30 日自願退貨（§12.1），也不適用法定撤回權（§12.4）</strong>，明確援引 EU 客製品豁免。唯法定瑕疵擔保保留。
+          <br><span class="tag tag-red">客製品豁免，直接援引法規，最具防禦性</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.canyon.com/en-fr/about-content/terms-conditions.html" target="_blank">canyon.com — T&amp;C §12 Voluntary Right of Return（特別是 §12.1 & §12.4）</a>
+            <a class="src-link" href="https://www.canyon.com/en-us/customer-service/manage-return-order/returns.html" target="_blank">canyon.com/us — Return Policy（restocking fee 機制）</a>
+            <a class="src-link" href="https://www.canyon.com/en-us/customer-service/find-your-canyon-bike/30-day-home-trial.html" target="_blank">canyon.com — 30 Day Home Trial（客製品另有收費說明）</a>
+          </div>
+        </td>
+        <td>
+          標準車款：14 日退貨（符合 EU CRD）。<br>
+          <strong>MyO 客製品：不可退貨，僅製造瑕疵除外。</strong>門市取車型與宅配型均有 14 日退貨期，但 personalized 均排除。退款 4–7 日，原支付方式退回。
+          <br><span class="tag tag-amber">製造瑕疵例外有明確說明，比 Trek 更友善</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.orbea.com/en-gb/p/cancellations-returns" target="_blank">orbea.com — Cancellations &amp; Returns（「Personalized products cannot be returned」）</a>
+            <a class="src-link" href="https://www.orbea.com/en-us/p/general-shopping-terms" target="_blank">orbea.com/us — General Shopping Terms（退貨條件）</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- ⑧ Warranty -->
+      <tr>
+        <td>⑧ Warranty<br>保固政策</td>
+        <td>
+          <strong>車架：原始車主終身保固。</strong><br>
+          塗裝：2 年（原始車主，外力損傷除外）。<br>
+          零件：各廠商保固。<br>
+          Trek Carbon Care：碳纖車架另有折扣替換方案。需在門市完成車輛登記。
+          <br><span class="tag tag-green">車架終身保固，業界最強</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.trekbikes.com/us/en_US/inside_trek/warrantied_for_life/" target="_blank">trekbikes.com — Warrantied for Life（終身保固說明）</a>
+            <a class="src-link" href="https://www.trekbikes.com/ca/en_CA/FAQ/project-one-paint/" target="_blank">trekbikes.com/ca — Paint FAQ（塗裝 2 年保固）</a>
+            <a class="src-link" href="https://www.trekbikes.com/warranty_policy/" target="_blank">trekbikes.com — Limited Warranty（完整條文）</a>
+            <a class="src-link" href="https://www.trekbikes.com/gb/en_GB/company/legal_policies/terms_and_conditions/" target="_blank">trekbikes.com/gb — T&amp;C §8（Warranty，2 年法定）</a>
+          </div>
+        </td>
+        <td>
+          消費者：2 年法定保固；商業客戶：1 年。提供額外品牌保固（依各組件）。另有 <strong>Crash Replacement 撞車替換方案</strong>（原始購買者、影響功能之損傷）。
+          <br><span class="tag tag-amber">無終身保固，但 Crash Replacement 有競爭力</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.canyon.com/en-fr/about-content/terms-conditions.html" target="_blank">canyon.com — T&amp;C §9（Warranty）& §11（Guarantee）</a>
+            <a class="src-link" href="https://www.canyon.com/en-us/about-content/terms-conditions-old.html" target="_blank">canyon.com/us — T&amp;C（Crash Replacement 說明）</a>
+          </div>
+        </td>
+        <td>
+          提供<strong>「終身商業保固」</strong>（Lifetime Commercial Warranty）。<br>
+          MyO 客製品特別規定：若原始顏色無法複製，<strong>以相近顏色替換</strong>。需在購買 30 日內登記。退款或維修由購買門市受理為原則。
+          <br><span class="tag tag-green">終身保固，且明確處理客製色無法復原的情境</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.orbea.com/en-int/p/orbea-lifetime-commercial-warranty" target="_blank">orbea.com — Orbea Lifetime Commercial Warranty（含 MyO 顏色替換說明）</a>
+            <a class="src-link" href="https://www.orbea.com/us-en/warranty/" target="_blank">orbea.com/us — Warranty（法律保固說明）</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- Lead time -->
+      <tr>
+        <td>製作週期<br>（參考）</td>
+        <td>
+          一般 2–6 週；高峰期可達 3–4 個月。各門市報價不一，常有延遲（論壇反映加 3–4 週為通則）。
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://weightweenies.starbike.com/forum/viewtopic.php?t=122091" target="_blank">WeightWeenies 論壇 — Project One 延遲討論</a>
+            <a class="src-link" href="https://www.activcycles.co.uk/blog/trek-project-one/" target="_blank">Activ Cycles — 交期最短 1 個月說明</a>
+          </div>
+        </td>
+        <td>
+          Pre-order 在「生產確認後 14 天前」通知付款，整體週期依車款而異，通常 4–10 週。
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.canyon.com/en-fr/about-content/terms-conditions.html" target="_blank">canyon.com — T&amp;C §10.1（Pre-order 機制）</a>
+          </div>
+        </td>
+        <td>
+          一般 4–6 週，旺季可能更長。Just-in-time 生產，通常 2–3 週可交門市。
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://sm-parts.net/en/pages/orbea-my-o" target="_blank">SMParts — Orbea MyO 交期說明（4–6 週）</a>
+            <a class="src-link" href="https://bikebiz.com/orbea-hails-just-in-time-delivery-for-bike-shops/" target="_blank">BikeBiz — Orbea Just-in-Time 生產說明</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- Payment -->
+      <tr>
+        <td>付款方式<br>（客製品）</td>
+        <td>
+          透過門市下單，門市個別收款。<strong>Trek 官網不直接接受 Project One 線上付款</strong>；配置完成後須前往門市確認並付款。
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.trekbikes.com/us/en_US/project-one-custom-bikes-explained/" target="_blank">trekbikes.com — Project One 說明（門市流程）</a>
+          </div>
+        </td>
+        <td>
+          全額線上付款，於「生產確認後 14 天前」通知繳清。支援信用卡及各國常用支付工具。<strong>Pre-order 免訂金，付款前可隨時取消。</strong>
+          <br><span class="tag tag-green">最友善的付款時機設計</span>
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.canyon.com/en-fr/about-content/terms-conditions.html" target="_blank">canyon.com — T&amp;C §4 Prices and Payment & §10 Pre-order</a>
+          </div>
+        </td>
+        <td>
+          線上全額付款（信用卡、PayPal 等）。亦支援門市 Click &amp; Collect（店取可協助調整）。
+          <div class="sources">
+            <div class="sources-label">資料來源</div>
+            <a class="src-link" href="https://www.orbea.com/us-en/general-shopping-terms/" target="_blank">orbea.com — General Shopping Terms（付款與取車說明）</a>
+          </div>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 2: OBSERVATIONS                    -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section" id="sec-obs">
+  <div class="section-header">
+    <h2>關鍵觀察與 Giant 參考建議</h2>
+    <p>基於三品牌條文分析，以下觀察對 Giant 客製車網站政策設計最具參考價值。</p>
+  </div>
+
+  <div class="obs-grid">
+
+    <div class="obs-card c-orbea">
+      <div class="obs-num">01</div>
+      <h3>退換貨：Orbea 的「製造瑕疵例外」是最佳平衡點</h3>
+      <p>三者都援引客製品豁免，但措辭策略差異明顯。Canyon 最積極，直接在 T&C §12.4 援引歐盟法規。Trek 最直白：Project One 直接排除在退貨政策外，連例外都沒有。Orbea 的做法則在中間：明確聲明「不可退貨」，但保留「製造瑕疵除外」的出口。</p>
+      <div class="highlight">
+        ➜ Giant 建議採用 Orbea 模式：政策主文聲明客製品不退，但明確保留製造瑕疵例外。這既提供法律保護，也避免讓消費者感到完全無保障。
+      </div>
+      <div class="sources" style="margin-top:12px">
+        <div class="sources-label">參考來源</div>
+        <a class="src-link" href="https://www.orbea.com/en-gb/p/cancellations-returns" target="_blank">orbea.com — Cancellations &amp; Returns</a>
+        <a class="src-link" href="https://www.canyon.com/en-fr/about-content/terms-conditions.html" target="_blank">canyon.com — T&amp;C §12.4</a>
+      </div>
+    </div>
+
+    <div class="obs-card">
+      <div class="obs-num">02</div>
+      <h3>取消政策：Canyon 的 24 小時窗口是業界最佳實務</h3>
+      <p>Canyon 明確給消費者 24 小時悔改機會（T&C §14.2），搭配 MyAccount 自助操作，清楚而可執行。Trek 完全不允許取消，Orbea 則允許在出貨前取消（更寬鬆但不夠明確）。</p>
+      <div class="highlight">
+        ➜ Giant 建議：若採用流程 A 或 B，在消費者提交訂單後提供 24–48 小時確認窗口。既能降低糾紛，也符合各市場消費者保護期望。特別在日本市場，消費者習慣較長的考慮時間。
+      </div>
+      <div class="sources" style="margin-top:12px">
+        <div class="sources-label">參考來源</div>
+        <a class="src-link" href="https://www.canyon.com/en-fr/about-content/terms-conditions.html" target="_blank">canyon.com — T&amp;C §14.2（MYCANYON 24 小時取消）</a>
+      </div>
+    </div>
+
+    <div class="obs-card c-orbea">
+      <div class="obs-num">03</div>
+      <h3>保固特殊條款：客製色無法復原時如何處理</h3>
+      <p>Orbea 保固明確規定：若 MyO 客製顏色無法復原，以相近顏色替換。這個細節三品牌中只有 Orbea 明確處理。Giant 在設計客製車保固條款時若忽略這點，日後當消費者的客製色無法重製時，極容易引發糾紛。</p>
+      <div class="highlight">
+        ➜ Giant 建議：保固條款中需明確說明「若原始塗裝配色無法完全複製，以最接近色系替換；規格零件若停產，以同等級替換」。
+      </div>
+      <div class="sources" style="margin-top:12px">
+        <div class="sources-label">參考來源</div>
+        <a class="src-link" href="https://www.orbea.com/en-int/p/orbea-lifetime-commercial-warranty" target="_blank">orbea.com — Lifetime Commercial Warranty（MyO 顏色替換條款）</a>
+      </div>
+    </div>
+
+    <div class="obs-card">
+      <div class="obs-num">04</div>
+      <h3>合約成立時機：Canyon 的兩階段確認最安全</h3>
+      <p>Canyon 明確規定「自動確認信不等於合約成立」（T&C §2.2），合約在 Canyon 正式接受後才有效。對比 Orbea（確認 email 後即成立）和 Trek（下單即不可取消），Canyon 的方式給廠商更大的彈性，可在庫存/生產確認後才正式承諾。</p>
+      <div class="highlight">
+        ➜ Giant 建議（特別是客製車）：考慮採用「暫定確認 → 生產確認 → 付款」三步驟流程，降低接單後發現零件缺貨的法律風險。
+      </div>
+      <div class="sources" style="margin-top:12px">
+        <div class="sources-label">參考來源</div>
+        <a class="src-link" href="https://www.canyon.com/en-fr/about-content/terms-conditions.html" target="_blank">canyon.com — T&amp;C §2.2（合約成立）& §10 Pre-order</a>
+      </div>
+    </div>
+
+    <div class="obs-card c-multi">
+      <div class="obs-num">05</div>
+      <h3>歐盟「客製品豁免」的法律不確定性</h3>
+      <p>Canyon（§12.4）援引 EU Consumer Rights Directive 中「非預製、由消費者個別組裝的客製品」豁免撤回權。但三品牌的消費者從「選項清單」中配置，並非真正量身製造，豁免主張存在法律風險。法律顧問審閱前不宜使用強硬措辭。</p>
+      <div class="highlight">
+        ➜ Giant 建議：「客製品不適用退換」措辭需法律顧問審閱後才能使用。可參考 Orbea 更保守的措辭，保留製造瑕疵例外，降低法律曝險。
+      </div>
+      <div class="sources" style="margin-top:12px">
+        <div class="sources-label">參考來源</div>
+        <a class="src-link" href="https://www.canyon.com/en-fr/about-content/terms-conditions.html" target="_blank">canyon.com — T&amp;C §12.4（豁免說明）</a>
+        <a class="src-link" href="https://www.orbea.com/en-gb/p/cancellations-returns" target="_blank">orbea.com — Cancellations &amp; Returns（保守措辭參考）</a>
+      </div>
+    </div>
+
+    <div class="obs-card">
+      <div class="obs-num">06</div>
+      <h3>Trek 的門市付款模式與 Giant 最接近</h3>
+      <p>Trek Project One 不直接線上收款，需透過授權門市下單付款，與 Giant 規劃的流程 C 最類似。但 Trek 的缺點是門市各自訂立附加政策，消費者體驗不一致，也造成退換貨責任模糊。</p>
+      <div class="highlight">
+        ➜ Giant 建議（流程 C）：若採門市付款，需在 Dealer Agreement 中明確規範退款 SOP 與消費者糾紛責任歸屬，避免重蹈 Trek 門市政策不一致的問題。
+      </div>
+      <div class="sources" style="margin-top:12px">
+        <div class="sources-label">參考來源</div>
+        <a class="src-link" href="https://www.trekbikes.com/us/en_US/project-one-custom-bikes-explained/" target="_blank">trekbikes.com — Project One 說明（門市流程）</a>
+        <a class="src-link" href="https://www.trekbikesofmountpleasant.com/about/shipping-return-policies-pg54.htm" target="_blank">Trek 授權門市 — 客製品退貨說明（各門市有差異）</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 3: SCORECARD                       -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section" id="sec-score">
+  <div class="section-header">
+    <h2>綜合評分表</h2>
+    <p>以 Giant 視角評估三品牌各 Policy 面向的可參考性與完整度。<br>
+       <span style="color:var(--green);font-weight:500">● 強</span> &nbsp;
+       <span style="color:#E8A020;font-weight:500">● 中</span> &nbsp;
+       <span style="color:var(--red);font-weight:500">● 弱</span>
+    </p>
+  </div>
+
+  <div class="scorecard">
+    <div class="score-row">
+      <div class="score-cell">評估面向</div>
+      <div class="score-cell" style="color:var(--trek);font-weight:600">Trek Project One</div>
+      <div class="score-cell" style="color:var(--canyon);font-weight:600">Canyon MYCANYON</div>
+      <div class="score-cell" style="color:var(--orbea);font-weight:600">Orbea MyO</div>
+    </div>
+    <div class="score-row">
+      <div class="score-cell">T&amp;C 條文明確度</div>
+      <div class="score-cell"><span class="dot dot-amber"></span>中——有條文但門市各自另訂</div>
+      <div class="score-cell"><span class="dot dot-green"></span>強——全文公開，含客製品專章</div>
+      <div class="score-cell"><span class="dot dot-green"></span>強——General Shopping Terms 完整</div>
+    </div>
+    <div class="score-row">
+      <div class="score-cell">取消政策友善度</div>
+      <div class="score-cell"><span class="dot dot-red"></span>弱——下單即不可取消</div>
+      <div class="score-cell"><span class="dot dot-green"></span>強——24 小時取消窗口（§14.2）</div>
+      <div class="score-cell"><span class="dot dot-amber"></span>中——出貨前可取消但無明確時限</div>
+    </div>
+    <div class="score-row">
+      <div class="score-cell">退換貨措辭平衡</div>
+      <div class="score-cell"><span class="dot dot-red"></span>弱——完全排除，無例外</div>
+      <div class="score-cell"><span class="dot dot-amber"></span>中——豁免明確但對消費者較硬</div>
+      <div class="score-cell"><span class="dot dot-green"></span>強——保留製造瑕疵例外</div>
+    </div>
+    <div class="score-row">
+      <div class="score-cell">保固條款完整度</div>
+      <div class="score-cell"><span class="dot dot-green"></span>強——車架終身 + 塗裝 2 年</div>
+      <div class="score-cell"><span class="dot dot-amber"></span>中——2 年法定 + Crash Replacement</div>
+      <div class="score-cell"><span class="dot dot-green"></span>強——終身 + 客製色替換條款</div>
+    </div>
+    <div class="score-row">
+      <div class="score-cell">訂單追蹤透明度</div>
+      <div class="score-cell"><span class="dot dot-amber"></span>中——需門市協助，線上有限</div>
+      <div class="score-cell"><span class="dot dot-amber"></span>中——兩階段確認，訊息清楚</div>
+      <div class="score-cell"><span class="dot dot-green"></span>強——即時狀態追蹤，app 支援</div>
+    </div>
+    <div class="score-row">
+      <div class="score-cell">付款設計靈活度</div>
+      <div class="score-cell"><span class="dot dot-red"></span>弱——門市付款，無線上選項</div>
+      <div class="score-cell"><span class="dot dot-green"></span>強——生產確認後才要求付款</div>
+      <div class="score-cell"><span class="dot dot-amber"></span>中——全額線上，但 Click&Collect 彈性</div>
+    </div>
+    <div class="score-row">
+      <div class="score-cell">EU 法規合規性</div>
+      <div class="score-cell"><span class="dot dot-amber"></span>中——GB 版符合 CRD，US 版另行</div>
+      <div class="score-cell"><span class="dot dot-green"></span>強——德國法 + EU Data Act 明確引用</div>
+      <div class="score-cell"><span class="dot dot-green"></span>強——符合 CRD，GDPR，含歐盟申訴管道</div>
+    </div>
+    <div class="score-row">
+      <div class="score-cell">Giant 參考價值<br><em style="font-size:11px;color:var(--muted)">（綜合評估）</em></div>
+      <div class="score-cell"><span class="dot dot-amber"></span>中——門市付款模式參考（流程 C）</div>
+      <div class="score-cell"><span class="dot dot-green"></span>最高——取消窗口、合約時機、付款設計均值得直接參考</div>
+      <div class="score-cell"><span class="dot dot-green"></span>高——退換貨措辭、保固客製色條款、訂單追蹤均值得採用</div>
+    </div>
+  </div>
+
+  <div style="margin-top:32px;background:var(--surface);border-radius:10px;padding:24px;box-shadow:var(--shadow);border-left:4px solid var(--trek)">
+    <div style="font-size:12px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:10px">Giant 設計建議摘要</div>
+    <div style="font-size:13px;line-height:2;color:var(--text)">
+      <strong>取消政策</strong>：參考 Canyon，提供下單後 24–48 小時取消窗口<br>
+      <strong>退換貨</strong>：參考 Orbea，主文排除客製品但明確保留製造瑕疵例外<br>
+      <strong>保固</strong>：參考 Orbea，明確說明客製色無法復原時的替換方式<br>
+      <strong>合約成立</strong>：參考 Canyon §10，採「生產確認後才要求付款」三步驟<br>
+      <strong>流程 C（門市付款）</strong>：參考 Trek 的教訓，事先在 Dealer Agreement 明訂退款 SOP<br>
+      <strong>法律顧問審閱</strong>：「客製品豁免退換」措辭上線前必須由法律顧問確認
+    </div>
+  </div>
+</div>
+
+<script>
+function show(tab) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + tab).classList.add('active');
+  // find active button by matching onclick attribute
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + tab + "'")) {
+      b.classList.add('active');
+    }
+  });
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
